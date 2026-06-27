@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Ad Ops Annex — Workflow audits and tools for the Sales / Ad Ops handoff</title>
+<meta name="description" content="I audit the handoff between Sales and Ad Ops, then build the tool that fixes it. No subscriptions. You own what's built.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#101d36;
+  --navy-2:#1b2f52;
+  --ink:#0c1322;
+  --paper:#f6f4ef;
+  --paper-2:#efebe2;
+  --line:#ddd8cb;
+  --muted:#6b6f63;
+  --muted-2:#9a9d92;
+  --gold:#c79a4b;
+  --gold-light:#efe2c2;
+  --gold-dark:#8a6a2e;
+  --green:#2f6b4f;
+  --green-light:#e3eee5;
+  --f-head:'Playfair Display',Georgia,serif;
+  --f-body:'DM Sans',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--f-body);background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+
+/* ───────── NAV ───────── */
+.nav{position:sticky;top:0;z-index:50;background:rgba(16,29,54,.97);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,.08)}
+.nav-inner{max-width:1180px;margin:0 auto;padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between}
+.nav-mark{display:flex;align-items:center;gap:10px;font-family:var(--f-head);font-weight:700;font-size:16.5px;color:#fff;letter-spacing:.2px}
+.nav-mark .dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.nav-links{display:flex;gap:30px;align-items:center}
+.nav-links a{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.2px;transition:color .15s}
+.nav-links a:hover{color:#fff}
+.nav-cta{font-size:12.5px;font-weight:700;color:var(--navy);background:var(--gold);padding:8px 16px;border-radius:7px;transition:filter .15s}
+.nav-cta:hover{filter:brightness(1.08)}
+.nav-burger{display:none}
+@media(max-width:780px){
+  .nav-links{display:none}
+  .nav-burger{display:block;color:#fff;font-size:22px;background:none;border:none;cursor:pointer}
+}
+
+/* ───────── HERO ───────── */
+.hero{background:linear-gradient(160deg,var(--navy) 0%,var(--ink) 100%);position:relative;overflow:hidden;padding:88px 28px 64px}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0);background-size:26px 26px;opacity:.5}
+.hero-inner{max-width:1000px;margin:0 auto;position:relative;z-index:1;text-align:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);margin-bottom:26px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:22px;height:1px;background:var(--gold-dark)}
+.hero-title{font-family:var(--f-head);font-weight:700;color:#fff;font-size:clamp(34px,5.4vw,58px);line-height:1.18;letter-spacing:-.5px;max-width:780px;margin:0 auto 22px}
+.hero-title em{font-style:italic;color:var(--gold);font-weight:600}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.62);max-width:540px;margin:0 auto 44px;line-height:1.7}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:64px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;padding:13px 26px;border-radius:8px;transition:all .15s;border:1.5px solid transparent;font-family:var(--f-body)}
+.btn-primary{background:var(--gold);color:var(--navy)}
+.btn-primary:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.55)}
+
+/* signature diagram */
+.flow-diagram{max-width:920px;margin:0 auto;position:relative}
+.flow-row{display:flex;align-items:center;justify-content:center;gap:18px}
+.flow-chaos{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;width:230px}
+.flow-clean{display:flex;gap:8px;flex-wrap:nowrap;width:230px}
+.tag-chip{font-family:var(--f-mono);font-size:10.5px;font-weight:500;color:rgba(255,255,255,.78);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);padding:6px 11px;border-radius:5px;white-space:nowrap}
+.flow-chaos .tag-chip:nth-child(1){transform:rotate(-7deg) translateY(2px)}
+.flow-chaos .tag-chip:nth-child(2){transform:rotate(4deg) translateY(-4px)}
+.flow-chaos .tag-chip:nth-child(3){transform:rotate(-3deg) translateY(6px)}
+.flow-chaos .tag-chip:nth-child(4){transform:rotate(6deg)}
+.flow-clean .tag-chip{background:rgba(199,154,75,.12);border-color:rgba(199,154,75,.4);color:var(--gold-light)}
+.flow-portal{flex-shrink:0;width:84px;height:84px;border-radius:14px;background:linear-gradient(160deg,var(--gold) 0%,#a87c33 100%);display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 0 1px rgba(199,154,75,.3),0 18px 40px -10px rgba(199,154,75,.35)}
+.flow-portal-inner{font-family:var(--f-head);font-weight:700;font-size:12px;color:var(--navy);text-align:center;line-height:1.25}
+.flow-arrow{color:rgba(255,255,255,.3);font-size:18px;flex-shrink:0}
+@keyframes pulseChip{0%,100%{opacity:.85}50%{opacity:1}}
+.tag-chip{animation:pulseChip 3.2s ease-in-out infinite}
+.flow-chaos .tag-chip:nth-child(2){animation-delay:.4s}
+.flow-chaos .tag-chip:nth-child(3){animation-delay:.8s}
+.flow-chaos .tag-chip:nth-child(4){animation-delay:1.2s}
+.flow-caption{font-family:var(--f-mono);font-size:10.5px;color:rgba(255,255,255,.32);text-align:center;margin-top:18px;letter-spacing:.4px}
+@media(prefers-reduced-motion: reduce){.tag-chip{animation:none}}
+@media(max-width:760px){
+  .flow-row{flex-direction:column;gap:14px}
+  .flow-chaos,.flow-clean{width:100%;justify-content:center}
+  .flow-arrow{transform:rotate(90deg)}
+}
+
+/* ───────── SECTION SHELL ───────── */
+section{padding:88px 28px}
+.section-inner{max-width:1000px;margin:0 auto}
+.eyebrow{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:14px;display:flex;align-items:center;gap:9px}
+.eyebrow::before{content:'';width:18px;height:1px;background:var(--gold-dark)}
+h2{font-family:var(--f-head);font-weight:700;font-size:clamp(26px,3.4vw,36px);color:var(--ink);line-height:1.25;letter-spacing:-.3px}
+
+/* ───────── ABOUT ───────── */
+.about{background:var(--paper-2)}
+.about-inner{max-width:880px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:start}
+.about-text p{font-size:14.5px;color:var(--muted);margin-top:18px;line-height:1.8}
+.about-chips{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;position:sticky;top:90px}
+.about-chips-label{font-family:var(--f-mono);font-size:10.5px;color:var(--muted-2);margin-bottom:14px;letter-spacing:.3px}
+.chip-row{display:flex;flex-direction:column;gap:9px}
+.tag-chip-light{font-size:12.5px;font-weight:600;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:9px 13px}
+@media(max-width:760px){
+  .about-inner{grid-template-columns:1fr}
+  .about-chips{position:static}
+  .chip-row{flex-direction:row;flex-wrap:wrap}
+}
+
+/* ───────── WHAT I AUDIT ───────── */
+.audit{background:var(--paper)}
+.audit-inner{max-width:760px;margin:0 auto;text-align:center}
+.audit p{font-size:15.5px;color:var(--muted);max-width:600px;margin:22px auto 0;line-height:1.8}
+.audit-flow{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:46px;flex-wrap:wrap}
+.audit-step{font-size:11.5px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 16px;text-align:center;line-height:1.4}
+.audit-step.hl{background:var(--gold-light);border-color:#e3cf9c;color:var(--gold-dark)}
+.audit-step span{display:block;font-size:9.5px;font-weight:500;color:var(--muted-2);margin-top:3px;font-family:var(--f-mono)}
+.audit-arrow{color:var(--muted-2);font-size:15px}
+@media(max-width:700px){.audit-flow{flex-direction:column}.audit-arrow{transform:rotate(90deg)}}
+
+/* ───────── COMPARE TABLE ───────── */
+.compare{background:var(--paper-2)}
+.compare-inner{max-width:880px;margin:0 auto}
+.compare-head{text-align:center;margin-bottom:48px}
+.compare-table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.compare-table th{padding:18px 22px;text-align:left;font-size:13px;font-weight:700;font-family:var(--f-body)}
+.compare-table th:first-child{background:var(--paper-2);color:var(--muted);width:170px}
+.compare-table th.left{background:var(--ink);color:rgba(255,255,255,.85)}
+.compare-table th.right{background:var(--gold);color:var(--navy)}
+.compare-table td{padding:16px 22px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);line-height:1.55}
+.compare-table td.label{font-weight:700;color:var(--ink);font-size:11.5px;text-transform:uppercase;letter-spacing:.3px;background:var(--paper);font-family:var(--f-mono)}
+.compare-table td.right{background:var(--gold-light);color:var(--gold-dark);font-weight:600}
+
+/* ───────── SUBSCRIPTION BANNER ───────── */
+.killer{background:var(--navy);color:#fff;text-align:center}
+.killer-inner{max-width:680px;margin:0 auto}
+.killer h2{color:#fff}
+.killer p{margin-top:18px;color:rgba(255,255,255,.62);font-size:15px;line-height:1.75}
+.killer-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:11px;color:var(--gold);background:rgba(199,154,75,.1);border:1px solid rgba(199,154,75,.3);padding:7px 14px;border-radius:7px;margin-top:28px}
+
+/* ───────── TOOLS GRID ───────── */
+.tools{background:var(--paper)}
+.tools-head{text-align:center;margin-bottom:50px;max-width:600px;margin-left:auto;margin-right:auto}
+.tools-head p{color:var(--muted);font-size:14.5px;margin-top:14px}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tool-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 24px}
+.tool-tag{font-family:var(--f-mono);font-size:10px;color:var(--gold-dark);background:var(--gold-light);padding:4px 9px;border-radius:5px;display:inline-block;margin-bottom:14px;letter-spacing:.3px}
+.tool-card h3{font-family:var(--f-body);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:9px}
+.tool-card p{font-size:12.8px;color:var(--muted);line-height:1.65}
+@media(max-width:860px){.tools-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.tools-grid{grid-template-columns:1fr}}
+
+/* ───────── PROCESS ───────── */
+.process{background:var(--paper-2)}
+.process-head{text-align:center;margin-bottom:54px}
+.process-row{display:flex;gap:16px;flex-wrap:wrap}
+.process-step{flex:1;min-width:200px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px 22px;position:relative}
+.process-num{font-family:var(--f-head);font-size:34px;font-weight:700;color:var(--gold-light);position:absolute;top:14px;right:18px;line-height:1}
+.process-step h3{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:8px;position:relative;z-index:1}
+.process-step p{font-size:12.5px;color:var(--muted);line-height:1.6;position:relative;z-index:1}
+
+/* ───────── CONTACT ───────── */
+.contact{background:var(--navy);color:#fff}
+.contact-inner{max-width:560px;margin:0 auto}
+.contact-head{text-align:center;margin-bottom:42px}
+.contact-head h2{color:#fff}
+.contact-head p{color:rgba(255,255,255,.6);margin-top:14px;font-size:14.5px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+label{display:block;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.7);margin-bottom:7px;letter-spacing:.2px}
+input,textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 13px;color:#fff;font-family:var(--f-body);font-size:13.5px}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.32)}
+input:focus,textarea:focus{outline:none;border-color:var(--gold)}
+textarea{resize:vertical;min-height:110px}
+.field-full{margin-bottom:14px}
+.submit-btn{width:100%;margin-top:6px}
+.form-note{font-size:11px;color:rgba(255,255,255,.4);text-align:center;margin-top:16px}
+.form-success{display:none;text-align:center;padding:28px;background:rgba(199,154,75,.1);border:1px solid rgba(199,154,75,.3);border-radius:10px}
+.form-success.show{display:block}
+.form-success h3{font-family:var(--f-head);font-size:19px;color:var(--gold);margin-bottom:8px}
+.form-success p{font-size:13.5px;color:rgba(255,255,255,.65)}
+@media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+
+/* ───────── FOOTER ───────── */
+footer{background:var(--ink);padding:30px 28px;text-align:center}
+footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-mark"><span class="dot"></span>The Ad Ops Annex</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#audit">What I Audit</a>
+      <a href="#compare">Why It's Different</a>
+      <a href="#tools">Tools</a>
+      <a href="#process">Process</a>
+      <a href="#contact" class="nav-cta">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Ad Operations Consulting</div>
+    <h1 class="hero-title">I don't just tell you where the bottleneck is. I hand you <em>the tool</em> that removes it.</h1>
+    <p class="hero-sub">20+ years in ad operations and business development — now focused on the handoff between Sales and Ad Ops, where repetitive paperwork quietly eats hours every week.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn btn-primary">Get in touch</a>
+      <a href="#tools" class="btn btn-ghost">See what gets built</a>
+    </div>
+
+    <div class="flow-diagram">
+      <div class="flow-row">
+        <div class="flow-chaos">
+          <span class="tag-chip">rfp.docx</span>
+          <span class="tag-chip">specs.xlsx</span>
+          <span class="tag-chip">discrepancy.csv</span>
+          <span class="tag-chip">ads.txt</span>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-portal"><div class="flow-portal-inner">THE<br>ANNEX</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-clean">
+          <span class="tag-chip">answered</span>
+          <span class="tag-chip">resolved</span>
+          <span class="tag-chip">owned</span>
+        </div>
+      </div>
+      <div class="flow-caption">// manual, repetitive, scattered → one tool, built once, yours forever</div>
+    </div>
+  </div>
+</header>
+
+<section class="about" id="about">
+  <div class="section-inner about-inner">
+    <div class="about-text">
+      <div class="eyebrow">Who's Behind This</div>
+      <h2>20+ years on both sides of the table.</h2>
+      <p>I've spent two decades inside the sales cycle and ad operations — startups, NBCUniversal, and a 12-year run building ad ops and business development at Sage Publishing, with a stop at Nielsen eMedia along the way. Small teams, big teams, scrappy budgets, enterprise budgets — I've seen pretty much every version of the same problem: sales waiting on ad ops, ad ops buried in repetitive requests, and time lost that should've gone toward revenue.</p>
+      <p>The fixes don't have to cost a fortune or take months to build. That's the whole reason this exists.</p>
+    </div>
+    <div class="about-chips">
+      <div class="about-chips-label">// 20+ years across</div>
+      <div class="chip-row">
+        <span class="tag-chip-light">Startups</span>
+        <span class="tag-chip-light">Nielsen eMedia</span>
+        <span class="tag-chip-light">NBCUniversal</span>
+        <span class="tag-chip-light">Sage Publishing</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="audit" id="audit">
+  <div class="section-inner audit-inner">
+    <div class="eyebrow" style="justify-content:center">What I'm Actually Auditing</div>
+    <h2>The handoff between Sales and Ad Ops.</h2>
+    <p>Every time a sales rep or coordinator needs a technical answer, a creative specs sheet, a campaign report, or has to chase down a billing discrepancy — that request currently lands on Ad Ops as a manual, one-off task. I look specifically at that handoff: where the back-and-forth happens, how often, and how much time it's quietly costing.</p>
+    <p>The goal isn't a general efficiency review — it's getting the repetitive paperwork off of Sales' plate so they can spend more time actually selling, and giving Ad Ops more uninterrupted time to focus on what actually drives revenue: running and optimizing campaigns.</p>
+
+    <div class="audit-flow">
+      <div class="audit-step">Sales / Coordinator</div>
+      <div class="audit-arrow">→</div>
+      <div class="audit-step hl">Repetitive Ask<span>RFP · Specs · Report · Discrepancy</span></div>
+      <div class="audit-arrow">→</div>
+      <div class="audit-step">Ad Ops</div>
+      <div class="audit-arrow">→</div>
+      <div class="audit-step">Manual Response</div>
+    </div>
+  </div>
+</section>
+
+<section class="compare" id="compare">
+  <div class="section-inner compare-inner">
+    <div class="compare-head">
+      <div class="eyebrow" style="justify-content:center">Why It's Different</div>
+      <h2>Silicon Valley firm vs. The Ad Ops Annex</h2>
+    </div>
+    <table class="compare-table">
+      <tr>
+        <th></th>
+        <th class="left">Silicon Valley Firm</th>
+        <th class="right">The Ad Ops Annex</th>
+      </tr>
+      <tr>
+        <td class="label">Timeline</td>
+        <td>Months of engineering, often longer than scoped</td>
+        <td class="right">Days, not months</td>
+      </tr>
+      <tr>
+        <td class="label">Investment</td>
+        <td>Five-figure build, plus ongoing subscription fees</td>
+        <td class="right">A fraction of the cost — built for smaller teams</td>
+      </tr>
+      <tr>
+        <td class="label">Ongoing cost</td>
+        <td>Recurring software fees, indefinitely</td>
+        <td class="right">You own it — no subscription required</td>
+      </tr>
+      <tr>
+        <td class="label">Who builds it</td>
+        <td>Engineers building to a spec they're handed</td>
+        <td class="right">Someone who's sat in the ad ops seat for 25+ years</td>
+      </tr>
+      <tr>
+        <td class="label">Best fit for</td>
+        <td>Large, well-funded teams with complex requirements</td>
+        <td class="right">Small and mid-size teams who need it solved, not engineered</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<section class="killer">
+  <div class="section-inner killer-inner">
+    <div class="eyebrow" style="justify-content:center;color:var(--gold)">Already Paying For a Partner Dashboard?</div>
+    <h2>All your demand partner reporting in one place — no ongoing subscription.</h2>
+    <p>If you're paying monthly for a platform just to see revenue, CPM, and impressions across your demand partners, the same view can be built once, handed off, and owned outright. No more recurring fee for something you check once a week or once a month.</p>
+    <div class="killer-tag">// cancel the subscription, keep the dashboard</div>
+  </div>
+</section>
+
+<section class="tools" id="tools">
+  <div class="section-inner">
+    <div class="tools-head">
+      <div class="eyebrow" style="justify-content:center">Where This Helps</div>
+      <h2>Custom tools, built around what you actually need.</h2>
+      <p>Not every team needs all six. The audit tells us which of these — if any — are worth building for your specific bottleneck. Each one below started as a real, recurring problem from inside an ad operations seat.</p>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <span class="tool-tag">sales · ops</span>
+        <h3>RFP Response Assistant</h3>
+        <p>Matches incoming RFP questions against a pre-approved capabilities knowledge base — reps respond same-day, only true edge cases get escalated.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tag">sales · ops</span>
+        <h3>Creative Specs Assistant</h3>
+        <p>Searchable specs lookup with one-click client email generation — a polished, accurate answer in under a minute.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tag">sales · ops</span>
+        <h3>Discrepancy Reconciliation</h3>
+        <p>Compares two reporting sources, flags variances beyond tolerance, and explains the likely cause in plain English.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tag">revenue</span>
+        <h3>Client Reporting Dashboard</h3>
+        <p>Converts a raw platform export into a polished, branded, client-ready performance report — every month, automatically.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tag">revenue</span>
+        <h3>Demand Partner Yield Dashboard</h3>
+        <p>Revenue, CPM, and impressions by demand partner — the same view as a paid platform, built once and owned outright.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tag">revenue</span>
+        <h3>Ads.txt &amp; Revenue Reconciliation</h3>
+        <p>Cross-checks ads.txt declarations against actual partner revenue — surfaces undeclared and stale partners, with the dollar exposure attached.</p>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:12.5px;color:var(--muted-2);margin-top:32px;font-family:var(--f-mono)">// most clients end up needing one or two of these, not the whole set</p>
+  </div>
+</section>
+
+<section class="process" id="process">
+  <div class="section-inner">
+    <div class="process-head">
+      <div class="eyebrow" style="justify-content:center">How It Works</div>
+      <h2>Four steps, low disruption.</h2>
+    </div>
+    <div class="process-row">
+      <div class="process-step">
+        <div class="process-num">1</div>
+        <h3>Diagnose</h3>
+        <p>A working session to map where time is actually being lost — observed, not assumed.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">2</div>
+        <h3>Design</h3>
+        <p>Build a system suited to how your team already operates, not a generic template.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">3</div>
+        <h3>Review</h3>
+        <p>You and your team validate every output before anything is considered final.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">4</div>
+        <h3>Hand-Off</h3>
+        <p>A working tool your team owns and runs — no ongoing software fees required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="section-inner contact-inner">
+    <div class="contact-head">
+      <div class="eyebrow" style="justify-content:center;color:var(--gold)">Get In Touch</div>
+      <h2>Let's see if this fits a real problem you have.</h2>
+      <p>No commitment required — just a quick conversation to see if it's worth pursuing.</p>
+    </div>
+
+    <form id="contactForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="contact">
+      <p style="display:none">
+        <label>Don't fill this out: <input name="bot-field"></label>
+      </p>
+
+      <div class="form-grid">
+        <div>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Jane Smith" required>
+        </div>
+        <div>
+          <label for="company">Company</label>
+          <input type="text" id="company" name="company" placeholder="Acme Media">
+        </div>
+      </div>
+      <div class="field-full">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="jane@acmemedia.com" required>
+      </div>
+      <div class="field-full">
+        <label for="message">What's going on?</label>
+        <textarea id="message" name="message" placeholder="Tell me a bit about the bottleneck you're dealing with..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary submit-btn">Send message</button>
+      <p class="form-note">Goes straight to me — no spam, no mailing list.</p>
+    </form>
+
+    <div class="form-success" id="formSuccess">
+      <h3>Message sent</h3>
+      <p>Thanks for reaching out — I'll get back to you shortly.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>// the ad ops annex · adopsannex.com</p>
+</footer>
+
+<script>
+const form = document.getElementById('contactForm');
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const data = new FormData(form);
+  fetch('/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: new URLSearchParams(data).toString()
+  })
+  .then(() => {
+    form.style.display = 'none';
+    document.getElementById('formSuccess').classList.add('show');
+  })
+  .catch(() => {
+    alert('Something went wrong sending that — try again, or email directly.');
+  });
+});
+</script>
+</body>
+</html>
