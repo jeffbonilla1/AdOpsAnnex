@@ -459,12 +459,16 @@ form.addEventListener('submit', function(e) {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     body: new URLSearchParams(data).toString()
   })
-  .then(() => {
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Netlify responded with status ' + response.status + ' — the form may not be registered on this deploy yet.');
+    }
     form.style.display = 'none';
     document.getElementById('formSuccess').classList.add('show');
   })
-  .catch(() => {
-    alert('Something went wrong sending that — try again, or email directly.');
+  .catch((err) => {
+    console.error('Form submission failed:', err);
+    alert('Something went wrong sending that (' + err.message + '). Try again, or email directly.');
   });
 });
 </script>
