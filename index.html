@@ -46,8 +46,15 @@ img,svg{display:block;max-width:100%}
 .nav-burger{display:none}
 @media(max-width:780px){
   .nav-links{display:none}
-  .nav-burger{display:block;color:#fff;font-size:22px;background:none;border:none;cursor:pointer}
+  .nav-burger{display:flex;align-items:center;justify-content:center;color:#fff;background:none;border:none;cursor:pointer;padding:4px}
 }
+
+/* Mobile dropdown panel */
+.mobile-nav{display:none;flex-direction:column;background:var(--navy-2);border-top:1px solid rgba(255,255,255,.08);padding:8px 28px 18px}
+.mobile-nav.open{display:flex}
+.mobile-nav a{padding:13px 0;font-size:14px;font-weight:600;color:rgba(255,255,255,.8);border-bottom:1px solid rgba(255,255,255,.07)}
+.mobile-nav a:last-of-type{border-bottom:none}
+.mobile-nav-cta{color:var(--gold)!important;font-weight:700!important}
 
 /* ───────── HERO ───────── */
 .hero{background:linear-gradient(160deg,var(--navy) 0%,var(--ink) 100%);position:relative;overflow:hidden;padding:88px 28px 64px}
@@ -200,11 +207,22 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
     <div class="nav-links">
       <a href="#about">About</a>
       <a href="#audit">What I Audit</a>
-      <a href="#compare">Why It's Different</a>
+      <a href="#compare">Two Approaches</a>
       <a href="#tools">Tools</a>
       <a href="#process">Process</a>
       <a href="#contact" class="nav-cta">Get in touch</a>
     </div>
+    <button class="nav-burger" id="navBurger" aria-label="Open menu" onclick="toggleMobileNav()">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="burgerIcon"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#about" onclick="closeMobileNav()">About</a>
+    <a href="#audit" onclick="closeMobileNav()">What I Audit</a>
+    <a href="#compare" onclick="closeMobileNav()">Two Approaches</a>
+    <a href="#tools" onclick="closeMobileNav()">Tools</a>
+    <a href="#process" onclick="closeMobileNav()">Process</a>
+    <a href="#contact" class="mobile-nav-cta" onclick="closeMobileNav()">Get in touch</a>
   </div>
 </nav>
 
@@ -282,18 +300,19 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
 <section class="compare" id="compare">
   <div class="section-inner compare-inner">
     <div class="compare-head">
-      <div class="eyebrow" style="justify-content:center">Why It's Different</div>
-      <h2>Silicon Valley firm vs. The Ad Ops Annex</h2>
+      <div class="eyebrow" style="justify-content:center">A Different Kind of Build</div>
+      <h2>Two valid ways to solve the same problem.</h2>
+      <p style="color:var(--muted);font-size:14.5px;margin-top:14px;max-width:560px;margin-left:auto;margin-right:auto">Enterprise automation firms do excellent work — months of engineering, dedicated teams, built for complex requirements. This is a lighter-weight option: faster, simpler, and built to be owned outright rather than rented monthly.</p>
     </div>
     <table class="compare-table">
       <tr>
         <th></th>
-        <th class="left">Silicon Valley Firm</th>
+        <th class="left">Enterprise Build</th>
         <th class="right">The Ad Ops Annex</th>
       </tr>
       <tr>
         <td class="label">Timeline</td>
-        <td>Months of engineering, often longer than scoped</td>
+        <td>Months of engineering — appropriate for complex, large-scale needs</td>
         <td class="right">Days, not months</td>
       </tr>
       <tr>
@@ -308,13 +327,13 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
       </tr>
       <tr>
         <td class="label">Who builds it</td>
-        <td>Engineers building to a spec they're handed</td>
+        <td>Engineering teams, built to spec</td>
         <td class="right">Someone who's sat in the ad ops seat for 25+ years</td>
       </tr>
       <tr>
         <td class="label">Best fit for</td>
-        <td>Large, well-funded teams with complex requirements</td>
-        <td class="right">Small and mid-size teams who need it solved, not engineered</td>
+        <td>Complex, multi-system integrations with live data feeds</td>
+        <td class="right">A specific workflow problem that needs solving fast</td>
       </tr>
     </table>
   </div>
@@ -451,6 +470,14 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
 </footer>
 
 <script>
+function toggleMobileNav() {
+  const nav = document.getElementById('mobileNav');
+  nav.classList.toggle('open');
+}
+function closeMobileNav() {
+  document.getElementById('mobileNav').classList.remove('open');
+}
+
 const form = document.getElementById('contactForm');
 form.addEventListener('submit', function(e) {
   e.preventDefault();
