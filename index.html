@@ -4,7 +4,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Ad Ops Annex — Workflow audits and tools for the Sales / Ad Ops handoff</title>
-<meta name="description" content="I audit the handoff between Sales and Ad Ops, then build the tool that fixes it. No subscriptions. You own what's built.">
+<meta name="description" content="We audit the handoff between Sales and Ad Ops, then build the tool that fixes it. No subscriptions. You own what's built.">
+<link rel="canonical" href="https://adopsannex.com/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://adopsannex.com/">
+<meta property="og:title" content="The Ad Ops Annex — Tools for the Sales / Ad Ops handoff">
+<meta property="og:description" content="We audit the handoff between Sales and Ad Ops, then build the tool that fixes it. No subscriptions. You own what's built.">
+<meta property="og:image" content="https://adopsannex.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Ad Ops Annex — Tools for the Sales / Ad Ops handoff">
+<meta name="twitter:description" content="We audit the handoff between Sales and Ad Ops, then build the tool that fixes it. No subscriptions. You own what's built.">
+<meta name="twitter:image" content="https://adopsannex.com/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23101d36'/%3E%3Ccircle cx='50' cy='50' r='14' fill='%23c79a4b'/%3E%3C/svg%3E">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "The Ad Ops Annex",
+  "url": "https://adopsannex.com",
+  "description": "Ad operations consulting focused on the handoff between Sales and Ad Ops — workflow audits and custom tools, no ongoing subscriptions.",
+  "areaServed": "US",
+  "serviceType": ["Ad Operations Consulting", "Workflow Automation", "RFP Response Tools", "Programmatic Revenue Tools"]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -111,14 +144,18 @@ h2{font-family:var(--f-head);font-weight:700;font-size:clamp(26px,3.4vw,36px);co
 .about{background:var(--paper-2)}
 .about-inner{max-width:880px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:start}
 .about-text p{font-size:14.5px;color:var(--muted);margin-top:18px;line-height:1.8}
-.about-chips{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;position:sticky;top:90px}
-.about-chips-label{font-family:var(--f-mono);font-size:10.5px;color:var(--muted-2);margin-bottom:14px;letter-spacing:.3px}
+.about-profile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px 24px;position:sticky;top:90px;text-align:center}
+.about-photo-wrap{margin:0 auto 16px;width:140px;height:140px;border-radius:50%;overflow:hidden;border:3px solid var(--gold-light)}
+.about-photo{width:100%;height:100%;object-fit:cover}
+.about-founder-name{font-family:var(--f-head);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.about-founder-title{font-size:12px;font-weight:600;color:var(--gold-dark);margin-bottom:18px;font-family:var(--f-mono);letter-spacing:.3px}
+.about-chips-label{font-family:var(--f-mono);font-size:10.5px;color:var(--muted-2);margin-bottom:12px;letter-spacing:.3px}
 .chip-row{display:flex;flex-direction:column;gap:9px}
-.tag-chip-light{font-size:12.5px;font-weight:600;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:9px 13px}
+.tag-chip-light{font-size:12.5px;font-weight:600;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:9px 13px;text-align:center}
 @media(max-width:760px){
   .about-inner{grid-template-columns:1fr}
-  .about-chips{position:static}
-  .chip-row{flex-direction:row;flex-wrap:wrap}
+  .about-profile{position:static}
+  .chip-row{flex-direction:row;flex-wrap:wrap;justify-content:center}
 }
 
 /* ───────── WHAT I AUDIT ───────── */
@@ -210,7 +247,7 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
       <a href="#compare">Two Approaches</a>
       <a href="#tools">Tools</a>
       <a href="#process">Process</a>
-      <a href="#contact" class="nav-cta">Get in touch</a>
+      <a href="#contact" class="nav-cta">Free consultation</a>
     </div>
     <button class="nav-burger" id="navBurger" aria-label="Open menu" onclick="toggleMobileNav()">
       <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="burgerIcon"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -222,17 +259,17 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
     <a href="#compare" onclick="closeMobileNav()">Two Approaches</a>
     <a href="#tools" onclick="closeMobileNav()">Tools</a>
     <a href="#process" onclick="closeMobileNav()">Process</a>
-    <a href="#contact" class="mobile-nav-cta" onclick="closeMobileNav()">Get in touch</a>
+    <a href="#contact" class="mobile-nav-cta" onclick="closeMobileNav()">Free consultation</a>
   </div>
 </nav>
 
 <header class="hero">
   <div class="hero-inner">
     <div class="hero-eyebrow">Ad Operations Consulting</div>
-    <h1 class="hero-title">I don't just tell you where the bottleneck is. I hand you <em>the tool</em> that removes it.</h1>
-    <p class="hero-sub">20+ years in ad operations and business development — now focused on the handoff between Sales and Ad Ops, where repetitive paperwork quietly eats hours every week.</p>
+    <h1 class="hero-title">We don't just tell you where the bottleneck is. We hand you <em>the tool</em> that removes it.</h1>
+    <p class="hero-sub">A significant career in ad operations and business development — now focused on the handoff between Sales and Ad Ops, where repetitive paperwork quietly eats hours every week.</p>
     <div class="hero-ctas">
-      <a href="#contact" class="btn btn-primary">Get in touch</a>
+      <a href="#contact" class="btn btn-primary">Book a free consultation</a>
       <a href="#tools" class="btn btn-ghost">See what gets built</a>
     </div>
 
@@ -262,12 +299,18 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
   <div class="section-inner about-inner">
     <div class="about-text">
       <div class="eyebrow">Who's Behind This</div>
-      <h2>20+ years on both sides of the table.</h2>
-      <p>I've spent two decades inside the sales cycle and ad operations — startups, NBCUniversal, and a 12-year run building ad ops and business development at Sage Publishing, with a stop at Nielsen eMedia along the way. Small teams, big teams, scrappy budgets, enterprise budgets — I've seen pretty much every version of the same problem: sales waiting on ad ops, ad ops buried in repetitive requests, and time lost that should've gone toward revenue.</p>
+      <h2>A significant career in ad operations. A practical approach to fixing it.</h2>
+      <p>We bring deep, hands-on experience from across the ad operations and business development world — from startups to NBCUniversal to a long run building ad ops and business development at Sage Publishing, with time at Nielsen eMedia along the way. We've worked inside small scrappy teams and large enterprise organizations, managed campaigns, built reporting systems, responded to hundreds of RFPs, and sat in every seat on both sides of the Sales and Ad Ops table.</p>
+      <p>That background is what makes the tools we build different — they're not built by engineers guessing at what ad ops needs. They're built by someone who's actually done the job.</p>
       <p>The fixes don't have to cost a fortune or take months to build. That's the whole reason this exists.</p>
     </div>
-    <div class="about-chips">
-      <div class="about-chips-label">// 20+ years across</div>
+    <div class="about-profile">
+      <div class="about-photo-wrap">
+        <img src="jeff-headshot.png" alt="Jeff Bonilla — Founder, The Ad Ops Annex" class="about-photo">
+      </div>
+      <div class="about-founder-name">Jeff Bonilla</div>
+      <div class="about-founder-title">Founder, The Ad Ops Annex</div>
+      <div class="about-chips-label">// Experience across</div>
       <div class="chip-row">
         <span class="tag-chip-light">Startups</span>
         <span class="tag-chip-light">Nielsen eMedia</span>
@@ -280,9 +323,9 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
 
 <section class="audit" id="audit">
   <div class="section-inner audit-inner">
-    <div class="eyebrow" style="justify-content:center">What I'm Actually Auditing</div>
+    <div class="eyebrow" style="justify-content:center">What We're Actually Auditing</div>
     <h2>The handoff between Sales and Ad Ops.</h2>
-    <p>Every time a sales rep or coordinator needs a technical answer, a creative specs sheet, a campaign report, or has to chase down a billing discrepancy — that request currently lands on Ad Ops as a manual, one-off task. I look specifically at that handoff: where the back-and-forth happens, how often, and how much time it's quietly costing.</p>
+    <p>Every time a sales rep or coordinator needs a technical answer, a creative specs sheet, a campaign report, or has to chase down a billing discrepancy — that request currently lands on Ad Ops as a manual, one-off task. We look specifically at that handoff: where the back-and-forth happens, how often, and how much time it's quietly costing.</p>
     <p>The goal isn't a general efficiency review — it's getting the repetitive paperwork off of Sales' plate so they can spend more time actually selling, and giving Ad Ops more uninterrupted time to focus on what actually drives revenue: running and optimizing campaigns.</p>
 
     <div class="audit-flow">
@@ -301,8 +344,8 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
   <div class="section-inner compare-inner">
     <div class="compare-head">
       <div class="eyebrow" style="justify-content:center">A Different Kind of Build</div>
-      <h2>Two valid ways to solve the same problem.</h2>
-      <p style="color:var(--muted);font-size:14.5px;margin-top:14px;max-width:560px;margin-left:auto;margin-right:auto">Enterprise automation firms do excellent work — months of engineering, dedicated teams, built for complex requirements. This is a lighter-weight option: faster, simpler, and built to be owned outright rather than rented monthly.</p>
+      <h2>Faster. Simpler. Built to be owned outright — not rented monthly.</h2>
+      <p style="color:var(--muted);font-size:14.5px;margin-top:14px;max-width:560px;margin-left:auto;margin-right:auto">Enterprise automation firms do excellent work — months of engineering, dedicated teams, built for complex requirements. We offer a lighter-weight option built for teams who need it solved quickly.</p>
     </div>
     <table class="compare-table">
       <tr>
@@ -328,7 +371,7 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
       <tr>
         <td class="label">Who builds it</td>
         <td>Engineering teams, built to spec</td>
-        <td class="right">Someone who's sat in the ad ops seat for 25+ years</td>
+        <td class="right">People who've actually sat in the ad ops seat</td>
       </tr>
       <tr>
         <td class="label">Best fit for</td>
@@ -425,9 +468,9 @@ footer p{font-size:11.5px;color:rgba(255,255,255,.35);font-family:var(--f-mono)}
 <section class="contact" id="contact">
   <div class="section-inner contact-inner">
     <div class="contact-head">
-      <div class="eyebrow" style="justify-content:center;color:var(--gold)">Get In Touch</div>
-      <h2>Let's see if this fits a real problem you have.</h2>
-      <p>No commitment required — just a quick conversation to see if it's worth pursuing.</p>
+      <div class="eyebrow" style="justify-content:center;color:var(--gold)">Free Consultation — No Obligation</div>
+      <h2>Let's talk about what's slowing your team down.</h2>
+      <p>A quick conversation is all it takes to find out whether we can help — no commitment, no pressure, no pitch. Just an honest look at the problem.</p>
     </div>
 
     <form id="contactForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
